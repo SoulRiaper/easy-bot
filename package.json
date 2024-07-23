@@ -1,0 +1,25 @@
+{
+  "name": "easy-bot",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoulRiaper/easy-bot.git"
+  },
+  "author": "KozlovRS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SoulRiaper/easy-bot/issues"
+  },
+  "homepage": "https://github.com/SoulRiaper/easy-bot#readme",
+  "description": "",
+  "dependencies": {
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12"
+  }
+}
