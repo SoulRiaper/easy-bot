@@ -1,9 +1,7 @@
 build
 package-lock.json
 node_modules
-rules/*
-codelets/*
+objectLib/*
+dist
 
-
-!rules/example.json
-!codelets/example.json
+!objectLib/example.json

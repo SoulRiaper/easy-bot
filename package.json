@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build-start": "npm run build && npm run start"
   },
   "repository": {
     "type": "git",
@@ -16,10 +20,13 @@
   },
   "homepage": "https://github.com/SoulRiaper/easy-bot#readme",
   "description": "",
-  "dependencies": {
+  "devDependencies": {
+    "@telegraf/types": "^7.1.0",
+    "@types/node": "^20.14.12",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
-  "devDependencies": {
-    "@types/node": "^20.14.12"
+  "dependencies": {
+    "telegraf": "^4.16.3"
   }
 }

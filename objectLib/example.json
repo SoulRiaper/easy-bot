@@ -1,0 +1,8 @@
+{
+    "id": "a_allUsers",
+    "users": "*",
+    "type": "rule",
+    "actions": [
+        "r_HelloWorld"
+    ]
+}

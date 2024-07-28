@@ -7,44 +7,45 @@ interface JsonFile {
 }
 
 export class Loader {
-    private ruleDir: string;
-    private codeletDir: string;
+    private watchDir: string;
 
-    constructor(ruleDir: string, codeletDir: string) {
-        this.ruleDir = ruleDir;
-        this.codeletDir = codeletDir;
+    constructor(watchDir: string) {
+        this.watchDir = watchDir;
     }
 
-
-    public readRules(): JsonFile[] {
-        return this.loadJsonFilesFromDirectory(this.ruleDir);
-    }
-
-    private readJson(filePath: string): unknown {
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
-        return JSON.parse(fileContent);
-    }
-
-    private loadJsonFilesFromDirectory(dir: string): JsonFile[] {
-        let results: JsonFile[] = [];
-
-        const list = fs.readdirSync(dir);
-        list.forEach(file => {
-            const filePath = path.join(dir, file);
-            const stat = fs.statSync(filePath);
-
-            if (stat && stat.isDirectory()) {
-                results = results.concat(this.loadJsonFilesFromDirectory(filePath));
-            } else if (path.extname(file) === '.json') {
-                try {
-                    const jsonData = this.readJson(filePath);
-                    results.push({ path: filePath, content: jsonData });
-                } catch (error) {
-                    console.error(`Failed to parse JSON from file: ${filePath}`, error);
+    async loadJsonFilesRecursively(): Promise<{ action: IAction[], rule: IRule[], codelet: ICodelet[] }> {
+        const directory = this.watchDir;
+        type JsonObject = IAction | IRule | ICodelet;
+        const objectsByType: { action: IAction[], rule: IRule[], codelet: ICodelet[] } = { action: [], rule: [], codelet: [] };
+    
+        async function loadJsonFromDirectory(dirPath: string): Promise<void> {
+            const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+    
+            for (const entry of entries) {
+                const fullPath = path.join(dirPath, entry.name);
+    
+                if (entry.isFile() && entry.name.endsWith('.json')) {
+                    const rawData = await fs.promises.readFile(fullPath, 'utf-8');
+                    const data: JsonObject = JSON.parse(rawData);
+    
+                    switch (data.type) {
+                        case 'action':
+                            objectsByType.action.push(data);
+                            break;
+                        case 'rule':
+                            objectsByType.rule.push(data);
+                            break;
+                        case 'codelet':
+                            objectsByType.codelet.push(data);
+                            break;
+                    }
+                } else if (entry.isDirectory()) {
+                    await loadJsonFromDirectory(fullPath);
                 }
             }
-        });
-
-        return results;
+        }
+    
+        await loadJsonFromDirectory(directory);
+        return objectsByType;
     }
 }

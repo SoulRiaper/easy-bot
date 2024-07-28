@@ -1,5 +1,4 @@
 {
     "token": "123",
-    "ruleDir": "./rules",
-    "codeletDir": "./codelets"
+    "watchDir": "./objectLib"
 }
