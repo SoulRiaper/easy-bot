@@ -5,24 +5,26 @@ import { Context } from "telegraf";
 
 export class RuleExecutor {
     private storage: SystemStorage;
-    private commonRules: Array<IRule>
     private actionExecutor: ActionExecutor;
 
     constructor (storage: SystemStorage, actionExecutor: ActionExecutor) {
         this.storage = storage;
         this.actionExecutor = actionExecutor;
-        this.commonRules = this.storage.getCommonRules();
     }
 
-    executeRules (context: Context) {
-        this.executeCommonRules(context);
+    async executeRules (context: Context) {
+        await this.executeCommonRules(context);
     }
 
-    private executeCommonRules (context: Context) {
+    private async executeCommonRules (context: Context) {
+        const commonRules = await this.storage.getCommonRules() 
         const actionIds = new Array<string>();
-        this.commonRules.forEach(rule => {
-            actionIds.push(...rule.actions);
+        commonRules.forEach(rule => {
+            if (rule.actions){
+                actionIds.push(...rule.actions);
+            }
         });
+        console.log(actionIds);
         this.actionExecutor.executeActions(context, actionIds);
     }
 }

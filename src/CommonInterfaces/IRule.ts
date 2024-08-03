@@ -1,6 +1,6 @@
 
 interface IRule {
-    id? : string;
+    id : string;
     type: 'rule';
     callbackFunction?: string;
     inputRegExp?: RegExp;

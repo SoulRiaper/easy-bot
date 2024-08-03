@@ -1,8 +1,8 @@
 {
-    "id": "a_allUsers",
+    "id": "r_allUsers1",
     "users": "*",
     "type": "rule",
     "actions": [
-        "r_HelloWorld"
+        "a_replyAll"
     ]
 }

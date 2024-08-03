@@ -1,60 +1,70 @@
+import { Redis } from "ioredis";
+import { ActionMode, IAction } from "../CommonInterfaces/IAction";
+
+
 export class SystemStorage {
-    private rules: {[key: string]: IRule} = {};
-    private actons: {[key: string]: IAction} = {};
-    private codelets: {[key: string]: ICodelet} = {};
+    private dbClient: Redis;
 
+    constructor (dbClient: Redis) {
+        this.dbClient = dbClient;
+    }
 
-    constructor (rules: Array<IRule>, actions: Array<IAction>, codelets: Array<ICodelet>) {
-        rules.forEach(rule => {
-            if (rule.id) {
-                this.rules[rule.id] = rule;
+    async getCommonRules (): Promise<IRule[]> {
+        const dataIds = await this.dbClient.smembers('rule:users:all');
+        const res = new Array<IRule>();
+        for (const dataId of dataIds) {
+            const data = await this.dbClient.hgetall(dataId);
+
+            if (Object.keys(data).length != 0) {
+                res.push({
+                    id: dataId,
+                    type: 'rule',
+                    actions: data.actions.split(','),
+                    callbackFunction: data.callbackFunction,
+                    inputRegExp: data.inputRegExp? new RegExp(data.inputRegExp) : undefined,
+                    users : '*'
+                })
             }
-        })
+        }
+        return res;
+    }
 
-        actions.forEach(action => {
-            if (action.id) {
-                this.actons[action.id] = action;
+    async getActionsByIds (ids: Array<string>): Promise<IAction[]> {
+        const res = new Array();
+        for (const id of ids) {
+            const action = await this.getActionById(id);
+            if (action) {
+                res.push(action);
             }
-        });
+        }
+        return res
+    }
 
-        codelets.forEach(codelet => {
-            if (codelet.id) {
-                this.codelets[codelet.id] = codelet;
+    private async getActionById (id: string): Promise<IAction | null> {
+        const data = await this.dbClient.hgetall(id);
+        if (Object.keys(data).length != 0) {
+            if (data.type != 'action') throw Error(`${id}: not action id`)
+            else {
+                return {
+                    id: id,
+                    type: "action",
+                    codelets : data.codelets? data.codelets.split(','): undefined,
+                    mode: ActionMode.new, 
+                    text: data.text,
+                    // executeKeyboard? : Object;
+                    // executeInlineKeyboard? : Object;
+                    attachment : data.attachment? data.attachment.split(','): undefined,
+                }
             }
-        });
+        }
+        return null;
     }
 
-    storeRules (rules: Array<IRule>) {
-        rules.forEach(rule => {
-            if (rule.id) {
-                this.rules[rule.id] = rule;
-            }
-        });
-    }
+    // getCodeletsByIds (ids: Array<string>): Array<ICodelet> {
 
-    getCommonRules () {
-        return Object.values(this.rules).filter( rule => {
-            return rule.users == "*" && !rule.inputRegExp;
-        })
-    }
+    // }
 
-    getActionsByIds (ids: Array<string>): Array<IAction> {
-        return ids.map(id => {
-            return this.getActionById(id);
-        })
-    }
+    // private getCodeletById (id: string): ICodelet {
 
-    private getActionById (id: string): IAction {
-        return this.actons[id];
-    }
-
-    getCodeletsByIds (ids: Array<string>): Array<ICodelet> {
-        return ids.map(id => {
-            return this.getCodeletById(id);
-        })
-    }
-
-    private getCodeletById (id: string): ICodelet {
-        return this.codelets[id];
-    }
+    // }
 }

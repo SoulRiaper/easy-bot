@@ -1,17 +1,16 @@
 
-interface IAction {
-    id? : string;
+export interface IAction {
+    id : string;
     type : 'action';
     codelets? : Array<string>;
-    mode?: ActionMode;
+    mode: ActionMode;
     text?: string;
     executeKeyboard? : Object;
     executeInlineKeyboard? : Object;
-    attachment? : Array<File>;
+    attachment? : Array<string>;
 }
-
-enum ActionMode {
-    EDIT = 'edit',
-    REPLY = 'reply',
-    NEW = 'new',
+export enum ActionMode {
+    edit = 'edit',
+    reply = 'reply',
+    new = 'new',
 }

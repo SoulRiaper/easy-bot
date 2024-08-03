@@ -3,5 +3,6 @@ package-lock.json
 node_modules
 objectLib/*
 dist
+settings.json
 
 !objectLib/example.json

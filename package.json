@@ -1,6 +1,6 @@
 {
   "name": "easy-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf dist",
@@ -27,6 +27,8 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@types/ioredis": "^5.0.0",
+    "ioredis": "^5.4.1",
     "telegraf": "^4.16.3"
   }
 }
