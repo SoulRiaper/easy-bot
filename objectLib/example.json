@@ -1,8 +1,30 @@
-{
-    "id": "r_allUsers1",
-    "users": "*",
-    "type": "rule",
-    "actions": [
-        "a_replyAll"
-    ]
-}
+[
+    {
+        "id": "r_allUsers1",
+        "users": "*",
+        "type": "rule",
+        "actions": [
+            "a_replyAll"
+        ]
+    },
+    {
+        "id": "a_replyAll",
+        "type": "action",
+        "mode": "reply",
+        "text": "Get out of here"
+    },
+    {
+        "id": "a_HelloWorld",
+        "type": "action",
+        "mode": "new",
+        "text": "Hello World"
+    },
+    {
+        "id": "r_allUsers",
+        "users": "*",
+        "type": "rule",
+        "actions": [
+            "a_HelloWorld"
+        ]
+    }
+]
