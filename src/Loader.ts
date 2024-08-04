@@ -2,10 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { IAction } from './CommonInterfaces/IAction';
 
-interface JsonFile {
-    path: string;
-    content: unknown;
-}
 
 export class Loader {
     private watchDir: string;
