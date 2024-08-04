@@ -1,5 +1,6 @@
 interface ICodelet {
-    id?: string;
+    id: string;
     type: 'codelet';
-    fileName: String;
+    filePath: string;
+    [x: string]: any;
 }

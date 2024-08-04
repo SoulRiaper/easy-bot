@@ -1,11 +1,14 @@
 import { Context } from "telegraf";
 import { SystemStorage } from "../SystemStorage/SystemStorage";
 import { ActionMode, IAction } from "../CommonInterfaces/IAction";
+import { CodeletExecutor } from "../CodeletExecutor/CodeletExecutor";
 
 export class ActionExecutor {
     private storage: SystemStorage;
-    constructor (storage: SystemStorage) {
+    private codeletExecutor: CodeletExecutor;
+    constructor (storage: SystemStorage, codeletExecutor: CodeletExecutor) {
         this.storage = storage;
+        this.codeletExecutor = codeletExecutor;
     }
 
     async executeActions (context: Context, actionIds: Array<string>) {
@@ -40,16 +43,7 @@ export class ActionExecutor {
             }
         }
         if (action.codelets) {
-            await this.executeCodelets(context, action.codelets);
+            await this.codeletExecutor.executeCodelets(context, action.codelets, undefined);
         }
-    }
-    
-    async executeCodelets (context: Context, codeletIds: Array<string>) {
-        // const codeletsToExecute = await this.storage.getActionsByIds(actionIds);
-        
-    }
-
-    executeCodelet (codeletId: string, extra: Object) {
-
     }
 }

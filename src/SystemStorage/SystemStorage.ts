@@ -30,7 +30,29 @@ export class SystemStorage {
         await this.dbClient.hset(action.id, action);
         await this.indexAction(action);
     }
-    
+
+    async storeCodelets (codeletArr: Array<ICodelet>) {
+        for(const codelet of codeletArr) {
+            await this.storeCodelet(codelet);
+        }
+    }
+
+    async storeCodelet (codelet: ICodelet) {
+        await this.dbClient.hset(codelet.id, codelet);
+        await this.indexCodelet(codelet);
+    }
+
+    async getCodeletsByIds (ids: Array<string>): Promise<ICodelet[]> {
+        const res = new Array();
+        for (const id of ids) {
+            const codelet = await this.getCodeletById(id);
+            if (codelet) {
+                res.push(codelet);
+            }
+        }
+        return res
+    }
+
     async getCommonRules (): Promise<IRule[]> {
         const dataIds = await this.dbClient.smembers('rule:users:all');
         const res = new Array<IRule>();
@@ -60,6 +82,21 @@ export class SystemStorage {
             }
         }
         return res
+    }
+
+    private async getCodeletById (id: string): Promise<ICodelet | null> {
+        const data = await this.dbClient.hgetall(id);
+        if (Object.keys(data).length != 0) {
+            if (data.type != 'codelet') throw Error(`${id}: not codelet id`)
+            else {
+                return {
+                    id: id,
+                    type: "codelet",
+                    filePath: data.filePath
+                }
+            }
+        }
+        return null;
     }
 
     private async getActionById (id: string): Promise<IAction | null> {
@@ -108,11 +145,8 @@ export class SystemStorage {
         await this.dbClient.sadd('rule:collection', action.id);
     }
 
-    // getCodeletsByIds (ids: Array<string>): Array<ICodelet> {
+    private async indexCodelet (codelet: ICodelet) {
+        await this.dbClient.sadd('codelet:collection', codelet.id);
+    }
 
-    // }
-
-    // private getCodeletById (id: string): ICodelet {
-
-    // }
 }

@@ -17,7 +17,10 @@
         "id": "a_HelloWorld",
         "type": "action",
         "mode": "new",
-        "text": "Hello World"
+        "text": "Hello World",
+        "codelets": [
+            "c_logInfo"
+        ]
     },
     {
         "id": "r_allUsers",
@@ -26,5 +29,10 @@
         "actions": [
             "a_HelloWorld"
         ]
+    },
+    {
+        "id": "c_logInfo",
+        "type": "codelet",
+        "filePath": "./codelet.js"
     }
 ]
